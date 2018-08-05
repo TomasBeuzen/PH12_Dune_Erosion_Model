@@ -9,6 +9,7 @@ Functions supporting use of Gaussian Process
 import numpy as np
 import pandas as pd
 import scipy as sp
+import math
 from sklearn.preprocessing import StandardScaler
 
 
@@ -51,3 +52,27 @@ def train_test_mda(df_X, df_y, sample_size, dist_measure, standardize):
         y_test = df[['runup']].drop(df.index[samp_idx])
             
     return X_train, X_test, y_train, y_test
+
+
+def calc_stockdon(Ho, Tp, slope):
+    '''
+    Function to calculate the elevation of the 2% exceedence runup, R2
+    Based on empircal parameterizations of Stockdon et al. 2006.
+    Inputs:
+    Ho = offshore significant wave height
+    Tp = peak wave period
+    slope = local beach slope
+    Outputs:
+    R2 = 2% exceedance runup elevation
+    '''
+    # Pre-processing
+    Lo = (9.81*Tp**2)/(2*math.pi)
+    Ib = abs(slope/np.sqrt(Ho/Lo))
+    # Calculate R2
+    R2 = 1.1*(0.35*slope*np.sqrt(Ho*Lo) +
+              np.sqrt(Ho*Lo*(0.563*slope**2+0.004))/2)
+    # Replace dissipative beaches with dissipative R2 expression
+    mask = Ib < 0.3
+    R2[mask] = 0.043*np.sqrt(Ho[mask]*Lo[mask])
+
+    return R2
