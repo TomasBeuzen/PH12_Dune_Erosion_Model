@@ -48,9 +48,15 @@ for i=1:1:length(R)
             SigDuneErosion(i) = interp1(zb,dv,zbm(i));
         end
     else
+        % if there is no dune erosion, fill the new dune base and the new
+        % cumulateive erosion with the previosu time step's value
         zbm(i)=zbp;
+        if i==1
+            SigDuneErosion(i) = 0;
+        else
+            SigDuneErosion(i) = SigDuneErosion(i-1);
+        end
     end
     
 end
 end
-
