@@ -8,12 +8,12 @@ close all
 clc
 format bank
 format compact
-addpath(genpath('.\functions'))
-addpath(genpath('.\data'))
+addpath(genpath('./Functions'))
+addpath(genpath('./Data'))
 
 % Load variables
 load('june2016.mat')
-load('calib_rB05_B0m.mat'); % calibration data
+load('calib_rB05_B0m_original.mat'); % calibration data
 idx_keep = calib.idx_keep; % 600 profiles to use for data analysis
 
 % Remove profiles that had no erosion
