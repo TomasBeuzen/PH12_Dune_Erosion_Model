@@ -32,6 +32,7 @@ zMHW = 1.45 - 0.925;            % Fixed MHW (1.45 = MHW, 0.925
 flag = false(Np, 1); % Flag for good profiles
 data = struct(...    % Output structure
     'zb',{},...
+    'zb_final',{},...
     'dv',{},...
     'dv_obs',{},...
     'Tp',{},...
@@ -39,7 +40,7 @@ data = struct(...    % Output structure
     'R_gp',{});
 
 %% Data Loop
-for i=209:Np
+for i=1:Np
 
     %%%% Morphological Data
     % Extract Data
@@ -54,6 +55,7 @@ for i=209:Np
     
     if abs(xb2 - xb1)<=1 || m < 0
         data(i,1).zb = NaN;
+        data(i,1).zb_final = NaN;
         data(i,1).dv = NaN;
         data(i,1).dv_obs = NaN;
         data(i,1).Tp = NaN;
@@ -67,6 +69,7 @@ for i=209:Np
         zdv = pf1(x >= xb1 & x <= xb2+padding);                % Z coordinates between pre/post dune base for pf1
         zb = m*(0:0.5:range(xdv))' + zb1*ones(length(zdv),1);  % Coordinates of recession slope (i.e, dune base)
         dv = cumtrapz(xdv,zdv-zb);                             % Cumulative eroded dune volume along projected slope
+        zb_final = zb2;
         dv_obs = dv(xdv==xb2);                                 % Observed dune volume (no padding)
         % Calcuate Beach Slope
         idx_xb1 = find(x == xb1);                                 % Index of xb1
@@ -89,6 +92,7 @@ for i=209:Np
     
     % Store
     data(i,1).zb = zb;
+    data(i,1).zb_final = zb_final;
     data(i,1).dv = dv;
     data(i,1).dv_obs = x;
     data(i,1).Tp = Tp;
