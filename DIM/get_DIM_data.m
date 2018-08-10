@@ -25,19 +25,23 @@ load GP_query_B0.mat
 % Hard-wired Settings/Parameters
 Np = length(june2016.profiles); % Number of profiles
 dx = 0.5;                       % Grid spacing
+dt = 108;                       % Timesteps in data (i.e. storm = 108hrs)
 padding = 10;                   % Padding in m to account for model over-erosion
 zMHW = 1.45 - 0.925;            % Fixed MHW (1.45 = MHW, 0.925
+draws = 10;                     % # of draws to take from GP to form an ensemble
 
 % Pre-allocation
-flag = false(Np, 1); % Flag for good profiles
-data = struct(...    % Output structure
+flag = false(Np, 1);        % Flag for good profiles
+R_gp_draws = nan(dt,draws); % Initialise GP draws matrix
+data = struct(...           % Output structure
     'zb',{},...
     'zb_final',{},...
     'dv',{},...
     'dv_obs',{},...
     'Tp',{},...
     'R_st',{},...
-    'R_gp',{});
+    'R_gp',{},...
+    'R_gp_draws',{});
 
 %% Data Loop
 for i=1:Np
@@ -84,10 +88,14 @@ for i=1:Np
         L = june2016.forcing(i).L0_offshore;   % Offshore wave length
         zSWL = june2016.forcing(i).waterLevel; % Still water level
         % Runup elevation using Stockdon
-        R_st = calcRn(Hs,L,b0,2) + zSWL;
+        R_st = calcRn_ST(Hs,L,b0,2) + zSWL;
         % Runup elevation using Gaussian Process
-        index = i*108-107:1:i*108;
+        index = i*dt-(dt-1):1:i*dt;
         R_gp = calcRn_GP(GP_mean,GP_sigma,index,'mean') + zSWL;
+        % Runup elevation using Gaussian Process
+        for k=1:draws
+            R_gp_draws(:,k) = calcRn_GP(GP_mean,GP_sigma,index,'draw') + zSWL;
+        end
     end
     
     % Store
@@ -98,6 +106,7 @@ for i=1:Np
     data(i,1).Tp = Tp;
     data(i,1).R_st = R_st;
     data(i,1).R_gp = R_gp;
+    data(i,1).R_gp_draws = R_gp_draws;
 end
 
 %% Save Output
