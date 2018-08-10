@@ -51,6 +51,7 @@ for i = 1:1:length(profile_indicies)
 end
 
 %plot the comparison on dune erosion metrics
+figure 
 subplot(1,2,1);
 plot([data.dVGP],[data.dVst],'.')
 xlabel('dV GP')
@@ -68,4 +69,9 @@ plot(2:5,2:5,'k-')
 axis([2 5 2 5])
 
 
+%there are nans, so these are not correct... and some errors are large.
+MSE_zb_GP= mean(nansum(([data.zb_final]-[data.zbGP]).^2))
+MSE_zb_st= mean(nansum(([data.zb_final]-[data.zbst]).^2))
 
+MAE_dv_GP= mean(abs(([data.dv_obs]-[data.dVGP])))
+MAE_dv_st= mean(abs(([data.dv_obs]-[data.dVst])))
