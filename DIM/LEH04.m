@@ -2,6 +2,11 @@ function [SigDuneErosion,zbm] = LEH04(dv,zb,R,T)
 %for a given set of points x, z, delV, and a given Runup and period timeseries
 %erode the dune
 
+%based on the Larson et al 2004 model
+
+%"It is easier to write a new code than to understand an old one"
+%-John von Neumann to Marston Morse, 1952
+
 %counter for cumulative dune erosion, which is length of forcing
 SigDuneErosion=0*R;
 
