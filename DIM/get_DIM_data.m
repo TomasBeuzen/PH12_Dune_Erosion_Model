@@ -44,7 +44,7 @@ data = struct(...           % Output structure
     'R_gp_draws',{});
 
 %% Data Loop
-for i=1:Np
+for i=161:Np
 
     %%%% Morphological Data
     % Extract Data
@@ -96,17 +96,18 @@ for i=1:Np
         for k=1:draws
             R_gp_draws(:,k) = calcRn_GP(GP_mean,GP_sigma,index,'draw') + zSWL;
         end
+        
+        % Store
+        data(i,1).zb = zb;
+        data(i,1).zb_final = zb_final;
+        data(i,1).dv = dv;
+        data(i,1).dv_obs = dv_obs;
+        data(i,1).Tp = Tp;
+        data(i,1).R_st = R_st;
+        data(i,1).R_gp = R_gp;
+        data(i,1).R_gp_draws = R_gp_draws;
     end
     
-    % Store
-    data(i,1).zb = zb;
-    data(i,1).zb_final = zb_final;
-    data(i,1).dv = dv;
-    data(i,1).dv_obs = dv_obs;
-    data(i,1).Tp = Tp;
-    data(i,1).R_st = R_st;
-    data(i,1).R_gp = R_gp;
-    data(i,1).R_gp_draws = R_gp_draws;
 end
 
 %% Save Output
