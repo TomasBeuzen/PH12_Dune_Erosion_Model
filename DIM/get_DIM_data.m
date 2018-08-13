@@ -28,7 +28,7 @@ dx = 0.5;                       % Grid spacing
 dt = 108;                       % Timesteps in data (i.e. storm = 108hrs)
 padding = 10;                   % Padding in m to account for model over-erosion
 zMHW = 1.45 - 0.925;            % Fixed MHW (1.45 = MHW, 0.925
-draws = 10;                     % # of draws to take from GP to form an ensemble
+draws = 100;                     % # of draws to take from GP to form an ensemble
 
 % Pre-allocation
 flag = false(Np, 1);        % Flag for good profiles

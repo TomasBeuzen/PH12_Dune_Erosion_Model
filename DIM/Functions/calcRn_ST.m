@@ -1,4 +1,4 @@
-function Rn = calculateRn(H0,L0,Beta,n)
+function Rn = calcRn_ST(H0,L0,Beta,n)
 % Rn = calcRn(H0,L0,Beta,n)
 % 
 % calculates the runup elevation using equation 9 in PH12
