@@ -1,11 +1,6 @@
 %This script loops through the structure and calculates zb and dune erosion
 %volumes for all profiles in the structure. It outputs the time series of
 %erosion and profile eovlution, as well as the final volumes
-
-%to do: 
-%1. compare predicted dv and zb with the observations 
-%    (which struc. field are the final zb and dv for each profile?)
-%3. do the ensembles
 %
 %"It is easier to write a new code than to understand an old one"
 %-John von Neumann to Marston Morse, 1952
@@ -21,7 +16,7 @@ load DIM_data.mat
 data=data_subset;
 profile_indicies = 1:508;
 
-Cs = linspace(2e-3,1e-5,100); %LEH04 param
+Cs = logspace(-5,-2,50); %LEH04 param
 %best is Cs= 8e-4
 
 %number of ensembles
@@ -30,9 +25,10 @@ ens=100;
 %preallocate
 errorGP=zeros(length(profile_indicies),length(Cs));
 errorST=zeros(length(profile_indicies),length(Cs));
+errorGPmean=zeros(length(profile_indicies),length(Cs));
 MaxGP = zeros(length(profile_indicies),length(Cs),ens);
 MinGP = zeros(length(profile_indicies),length(Cs),ens);
-
+MeanGP = zeros(length(profile_indicies),length(Cs),ens);
 
 %loop through those indicies
 for i = 1:1:length(profile_indicies)
@@ -48,39 +44,36 @@ for i = 1:1:length(profile_indicies)
     
     %run it through the St model
     [SigDuneErosionST,zbmST] = LEH04ensembles(dv,zb,R_st,T,Cs(j));
+    
     %run it through GP
     [SigDuneErosionGP,zbmGP] = LEH04ensembles(dv,zb,R_gp,T,Cs(j));
-    
-    %error
-     errorGP(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionGP(end));
-     errorST(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionST(end));     
-    
-    %run it through 10 'draws' from GP
+
+    %run it through 'ens' number of 'draws' from GP
     [SigDuneErosionGPD,zbmGPD] = LEH04ensembles(dv,zb,R_gp_draws,T,Cs(j));
-    %record the max and min.
+    
+    %record the max and min from GP draws
     for k=1:ens
         MaxGP(i,j,k) = max(SigDuneErosionGPD(end,1:k));
         MinGP(i,j,k) = min(SigDuneErosionGPD(end,1:k));
+        MeanGP(i,j,k) = mean(SigDuneErosionGPD(end,1:k));
     end
+          
+    %record error
+    errorST(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionST(end));     
+    errorGP(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionGP(end));
     
-  
-%     %put time series back in the structure
-%     data(profile_indicies(i)).SigDuneErosionST = SigDuneErosionST;
-%     data(profile_indicies(i)).zbmST = zbmST;
-%     data(profile_indicies(i)).SigDuneErosionGP = SigDuneErosionGP;
-%     data(profile_indicies(i)).zbmGP = zbmGP;
-%     data(profile_indicies(i)).SigDuneErosionGPD = SigDuneErosionGPD;
-%     data(profile_indicies(i)).zbmGPD = zbmGPD;
-%     
-%     %make a new column for total erosion and final zb
-%     data(profile_indicies(i)).dVst = SigDuneErosionST(end);
-%     data(profile_indicies(i)).zbst = zbmST(end); 
-%     data(profile_indicies(i)).dVGP = SigDuneErosionGP(end);
-%     data(profile_indicies(i)).zbGP = zbmGP(end);
-%     
-%     data(profile_indicies(i)).dVGPD = SigDuneErosionGPD(end,:)';
-%     data(profile_indicies(i)).zbGPD = zbmGPD(end,:)';
+    %GP ensemble mean is done for max number of ensembles.
+    errorGPmean(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionGP(end,1:ens));
     
+    
+    %Record output in the structure
+     data(profile_indicies(i)).SigDuneErosionST = SigDuneErosionST;
+     data(profile_indicies(i)).zbmST = zbmST;
+     data(profile_indicies(i)).SigDuneErosionGP = SigDuneErosionGP;
+     data(profile_indicies(i)).zbmGP = zbmGP;
+     data(profile_indicies(i)).SigDuneErosionGPD = SigDuneErosionGPD;
+     data(profile_indicies(i)).zbmGPD = zbmGPD;
+         
     end
 end
 
@@ -104,9 +97,10 @@ subplot(2,1,1)
 plot(Cs,mean(errorST),'r.');
 hold on
 plot(Cs,mean(errorGP),'b.');
+plot(Cs,mean(errorGPmean),'k.');
 xlabel('Cs')
-ylabel('MAE all profiles')
-legend('ST','GP')
+ylabel('MAE (all profiles)')
+legend('ST','GP', 'Ensemble Mean')
 
 subplot(2,1,2)
 plot(Cs,PercentWithin)
