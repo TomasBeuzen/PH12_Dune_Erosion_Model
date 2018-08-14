@@ -25,10 +25,10 @@ for ii=1:1:draws(2)
     for i=1:1:draws(1)
         %LEH model
         if i==1 %use the initial value from the curve, which is the pre storm
-            DuneErosion=4*Cs*(R(i,ii)-zb(1))*(t/T(i));
+            DuneErosion=4*Cs*((R(i,ii)-zb(1))^2)*(t/T(i));
             zbp = zb(1);
         else %use the model value from previosu time step
-            DuneErosion=4*Cs*(R(i,ii)-zbm(i-1,ii))*(t/T(i));
+            DuneErosion=4*Cs*((R(i,ii)-zbm(i-1,ii))^2)*(t/T(i));
             zbp = zbm(i-1,ii);
         end
         
