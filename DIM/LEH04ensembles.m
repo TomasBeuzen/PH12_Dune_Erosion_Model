@@ -23,17 +23,19 @@ draws=size(R);
 %iteratively calculate the dune erosion fore the entire runup timeseries
 for ii=1:1:draws(2)
     for i=1:1:draws(1)
-        %LEH model
+        
         if i==1 %use the initial value from the curve, which is the pre storm
-            DuneErosion=4*Cs*((R(i,ii)-zb(1))^2)*(t/T(i));
             zbp = zb(1);
         else %use the model value from previosu time step
-            DuneErosion=4*Cs*((R(i,ii)-zbm(i-1,ii))^2)*(t/T(i));
             zbp = zbm(i-1,ii);
         end
         
         %if the runup is higher than the dune toe, then erode the dune
-        if DuneErosion>0
+        if R(i,ii) > zbp
+            
+            %LEH model
+            DuneErosion=4*Cs*((R(i,ii)-zb(1))^2)*(t/T(i));
+            
             %for the dune erosion calculated, find the new zb.
             %1. find cumulative dune erosion
             if i==1
