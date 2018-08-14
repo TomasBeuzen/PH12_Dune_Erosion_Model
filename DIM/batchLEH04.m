@@ -63,7 +63,7 @@ for i = 1:1:length(profile_indicies)
     errorGP(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionGP(end));
     
     %GP ensemble mean is done for max number of ensembles.
-    errorGPmean(i,j)=abs([data(profile_indicies(i)).dv_obs]-SigDuneErosionGP(end,1:ens));
+    errorGPmean(i,j)=abs([data(profile_indicies(i)).dv_obs]-MeanGP(i,j,ens));
     
     
     %Record output in the structure
