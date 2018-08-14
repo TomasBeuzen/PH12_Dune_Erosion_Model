@@ -26,9 +26,13 @@ ens=100;
 errorGP=zeros(length(profile_indicies),length(Cs));
 errorST=zeros(length(profile_indicies),length(Cs));
 errorGPmean=zeros(length(profile_indicies),length(Cs));
+errorGPmode=zeros(length(profile_indicies),length(Cs));
+errorGPmedian=zeros(length(profile_indicies),length(Cs));
 MaxGP = zeros(length(profile_indicies),length(Cs),ens);
 MinGP = zeros(length(profile_indicies),length(Cs),ens);
 MeanGP = zeros(length(profile_indicies),length(Cs),ens);
+ModeGP = zeros(length(profile_indicies),length(Cs),ens);
+MedianGP = zeros(length(profile_indicies),length(Cs),ens);
 
 %loop through those indicies
 for i = 1:1:length(profile_indicies)
@@ -56,6 +60,8 @@ for i = 1:1:length(profile_indicies)
         MaxGP(i,j,k) = max(SigDuneErosionGPD(end,1:k));
         MinGP(i,j,k) = min(SigDuneErosionGPD(end,1:k));
         MeanGP(i,j,k) = mean(SigDuneErosionGPD(end,1:k));
+        ModeGP(i,j,k) = mode(SigDuneErosionGPD(end,1:k));
+        MedianGP(i,j,k) = median(SigDuneErosionGPD(end,1:k));
     end
           
     %record error
@@ -64,6 +70,8 @@ for i = 1:1:length(profile_indicies)
     
     %GP ensemble mean is done for max number of ensembles.
     errorGPmean(i,j)=abs([data(profile_indicies(i)).dv_obs]-MeanGP(i,j,ens));
+    errorGPmode(i,j)=abs([data(profile_indicies(i)).dv_obs]-ModeGP(i,j,ens));
+    errorGPmedian(i,j)=abs([data(profile_indicies(i)).dv_obs]-MedianGP(i,j,ens));
     
     
     %Record output in the structure
@@ -94,18 +102,57 @@ end
 
 figure
 subplot(2,1,1)
-plot(Cs,mean(errorST),'r.');
+semilogx(Cs,mean(errorST),'r.');
 hold on
-plot(Cs,mean(errorGP),'b.');
-plot(Cs,mean(errorGPmean),'k.');
+semilogx(Cs,mean(errorGP),'b.');
+semilogx(Cs,mean(errorGPmean),'k.');
+semilogx(Cs,mean(errorGPmedian),'k--');
+semilogx(Cs,mean(errorGPmode),'k.-');
 xlabel('Cs')
 ylabel('MAE (all profiles)')
-legend('ST','GP', 'Ensemble Mean')
+legend('ST','GP', 'E. Mean', 'E. Median', 'E. Mode')
 
 subplot(2,1,2)
-plot(Cs,PercentWithin)
+semilogx(Cs,PercentWithin)
 xlabel('Cs')
 ylabel('percent within ensemble')
+
+
+%%%%%%%%%%%
+%find index of value Cs=7e-4; in the Cs vector... 
+%Hard coded for now
+
+j=31;
+
+Mean_GP=squeeze(MeanGP(:,j,:));
+Mode_GP=squeeze(ModeGP(:,j,:));
+Median_GP=squeeze(MedianGP(:,j,:));
+
+a=[data.dv_obs]';
+b=repmat(a,1,100);
+
+MAE_GPmean = mean(abs(b-Mean_GP));
+MAE_GPmode = mean(abs(b-Mode_GP));
+MAE_GPmedian = mean(abs(b-Median_GP));
+
+%CAPTURE STATS
+Capture=squeeze(PercentWithin(j,:));
+
+figure
+subplot(2,1,1)
+plot(MAE_GPmean)
+hold on
+plot(MAE_GPmode)
+plot(MAE_GPmedian)
+xlabel('# of ensembles')
+ylabel('MAE')
+legend('Mean','Mode','Median')
+
+subplot(2,1,2)
+plot(Capture)
+xlabel('# of ensembles')
+ylabel('Captured %')
+
 
 
 
