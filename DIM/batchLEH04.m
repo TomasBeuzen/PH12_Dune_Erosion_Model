@@ -21,7 +21,7 @@ load DIM_data.mat
 data=data_subset;
 profile_indicies = 1:508;
 
-Cs = linspace(2e-3,1e-6,100); %LEH04 param
+Cs = linspace(2e-3,1e-5,100); %LEH04 param
 %best is Cs= 8e-4
 
 %number of ensembles
@@ -84,6 +84,7 @@ for i = 1:1:length(profile_indicies)
     end
 end
 
+save data.mat
 %save('DIM_data_model_ensemble_Cs','data')
 
 %capture stats
