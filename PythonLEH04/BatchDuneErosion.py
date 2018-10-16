@@ -1,4 +1,3 @@
-
 """
 This script loops through the python dictionary and 
 calculates zb and dune erosion
@@ -15,6 +14,8 @@ EBG Aug. 2018 (Matlab); Oct 2018 (Python)
 
 import pickle
 
+import numpy as np
+
 with open('DIM_data.pkl', 'rb') as f:
     data = pickle.load(f)
     
@@ -22,7 +23,7 @@ with open('DIM_data.pkl', 'rb') as f:
 from LEH04 import LEH04ensembles
     
 #loop through those indicies
-for k in dict:
+for k in data:
     profile=data[k]
     
     #pull all relevant data out of the dictionary
