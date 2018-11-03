@@ -16,7 +16,7 @@ import pickle
 
 import numpy as np
 
-with open('DIM_data.pkl', 'rb') as f:
+with open('DIM_data_2011.pkl', 'rb') as f:
     data = pickle.load(f)
     
 #import the LEH04 model function
