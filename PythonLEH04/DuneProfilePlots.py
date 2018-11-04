@@ -39,12 +39,12 @@ R_gp_draws = profile['R_gp_draws']
 #plotting
 t = np.arange(0, 120)
 fig, axs = plt.subplots(2, 1)
-axs[0].plot(t, R_gp_draws[:,0:11],'gray',t, R_gp,'b', t,zbmGPD[:,0:11],'gray',t,zbmGP,'k',)
+axs[0].plot(t, R_gp_draws[:,0:11],'gray',t, R_gp,'b', t,zbmGPD[:,0:11],'gray',t,zbmGP,'k',119,profile['zb_final'],'.k')
 
 axs[0].set_xlabel('time (hours)')
 axs[0].set_ylabel('Runup elevation (blue) and Dune Toe Height (black)')
 
-axs[1].plot(t, SigDuneErosionGPD[:,0:11],'gray', t, SigDuneErosionGP,'b')
+axs[1].plot(t, SigDuneErosionGPD[:,0:11],'gray', t, SigDuneErosionGP,'b',119,profile['dv_obs'],'.k')
 axs[1].set_ylabel('total delV')
 
 plt.show()
