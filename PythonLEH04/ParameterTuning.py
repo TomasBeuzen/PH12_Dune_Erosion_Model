@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Script to tune dune erosion constant.
 Code incorporates most of 'BatchDuneErosion.py', but adds soem extra steps 
@@ -10,6 +12,7 @@ EBG Aug. 2018 (Matlab); Nov 2018 (Python)
 import pickle
 
 import numpy as np
+import matplotlib.pyplot as plt
 #from scipy import stats
 #mode is commented out right now
 
@@ -20,7 +23,7 @@ with open('DIM_data_2011.pkl', 'rb') as f:
 from LEH04 import LEH04ensembles
 
 #LEH04 param array
-Cs = np.logspace(-5,-2,50);
+Cs = np.logspace(-5,-1,50);
 #Best value is:
 #Cs= 0.0016 
 
@@ -99,3 +102,39 @@ for j in range(len(Cs)):
         #This 'overprints' the old dictionary b/c it adds new entries.
         #no info is deleted.
         data[k]=profile
+        
+#COMPUTE SOME INFO
+#capture stats
+PercentWithin = np.zeros((len(Cs),ens))
+obs = np.zeros((len(data)))
+for h in data:
+    obs[h] = data[h]['dv_obs']
+    
+    
+for f in range(len(Cs)):
+    for g in range(ens):
+        within = np.where((MaxGP[:,f,g]>=obs) & (MinGP[:,f,g]<=obs))
+        PercentWithin[f,g] = 100*(len(within[0])/(len(data)));
+
+
+
+#plotting
+fig, axs = plt.subplots(2, 1)
+axs[0].semilogx(Cs,np.mean(errorST, axis=0),'r',Cs,np.mean(errorGP, axis=0),'k',Cs,np.mean(errorGPmean, axis=0),'k.',Cs,np.mean(errorGPmedian, axis=0),'b.')
+
+axs[0].set_ylabel('MAE (all profiles)')
+axs[0].set_ylim(0, 10)  
+
+axs[1].plot()
+axs[1].semilogx(Cs,PercentWithin)
+axs[1].set_xlabel('Cs')
+axs[1].set_ylabel('percent within ensemble')
+
+plt.show()
+
+#legend('ST','GP', 'E. Mean', 'E. Median')
+
+#for finding the min error
+#a=np.mean(errorGPmean, axis=0)
+#aa=np.mean(errorGP, axis=0)
+

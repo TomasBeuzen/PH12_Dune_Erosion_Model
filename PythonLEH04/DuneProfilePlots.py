@@ -20,7 +20,7 @@ p=15;
 #number of ensembles
 ens=10;
 #LEH04 erosion paramerer
-Cs= 0.0016
+Cs= 0.003
 
 profile=data[p]
     

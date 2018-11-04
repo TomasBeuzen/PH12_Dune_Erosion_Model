@@ -23,7 +23,7 @@ with open('DIM_data_2011.pkl', 'rb') as f:
 from LEH04 import LEH04ensembles
 
 #LEH04 param
-Cs= 0.0016 
+Cs= 0.003
    
 #loop through those indicies
 for k in data:
