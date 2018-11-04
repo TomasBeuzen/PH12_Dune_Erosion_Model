@@ -11,7 +11,7 @@ def LEH04ensembles( dv, zb, R, T ):
     -John von Neumann to Marston Morse, 1952
     '''
     
-    Cs= 8e-4 #LEH04 param
+    Cs= 0.0016 #LEH04 param
     t = 60*60 #hourly timesteps
         
     #for each GP draws/realizations in R timeseries
@@ -34,17 +34,23 @@ def LEH04ensembles( dv, zb, R, T ):
     for ii in draws:
         for i in time:
             #print(i)
-            #LEH model
+            
+            #find the dune toe elevation
             if i == 0: 
                 #use the initial value from the curve, which is the pre storm
-                DuneErosion = 4*Cs*((R[i,ii]-zb[0])^2)*(t/T[i])
                 zbp = zb[0]
-            else: 
+            else:
                 #use the model value from previosu time step
-                DuneErosion=4*Cs*((R[i,ii]-zbm[i-1,ii])^2)*(t/T[i])
                 zbp = zbm[i-1,ii]
-            
+                
             #if the runup is higher than the dune toe, then erode the dune
+            if R[i,ii] > zbp:
+                #LEH model
+                DuneErosion = 4*Cs*((R[i,ii]-zbp)**2)*(t/T[i])
+            else:
+                DuneErosion=0
+                
+            #if there was erosion    
             if DuneErosion > 0:
                 #for the dune erosion calculated, find the new zb.
                 #1. find cumulative dune erosion
