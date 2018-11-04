@@ -37,7 +37,7 @@ def LEH04ensembles( dv, zb, R, T ):
             #LEH model
             if i == 0: 
                 #use the initial value from the curve, which is the pre storm
-                DuneErosion = 4*Cs*(R[i,ii]-zb[0])*(t/T[i])
+                DuneErosion = 4*Cs*((R[i,ii]-zb[0])^2)*(t/T[i])
                 zbp = zb[0]
             else: 
                 #use the model value from previosu time step
