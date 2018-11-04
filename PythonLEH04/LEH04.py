@@ -41,7 +41,7 @@ def LEH04ensembles( dv, zb, R, T ):
                 zbp = zb[0]
             else: 
                 #use the model value from previosu time step
-                DuneErosion=4*Cs*(R[i,ii]-zbm[i-1,ii])*(t/T[i])
+                DuneErosion=4*Cs*((R[i,ii]-zbm[i-1,ii])^2)*(t/T[i])
                 zbp = zbm[i-1,ii]
             
             #if the runup is higher than the dune toe, then erode the dune
