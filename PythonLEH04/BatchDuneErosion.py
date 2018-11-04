@@ -21,7 +21,10 @@ with open('DIM_data_2011.pkl', 'rb') as f:
     
 #import the LEH04 model function
 from LEH04 import LEH04ensembles
-    
+
+#LEH04 param
+Cs= 0.0016 
+   
 #loop through those indicies
 for k in data:
     profile=data[k]
@@ -35,11 +38,11 @@ for k in data:
     R_gp_draws = profile['R_gp_draws']
     
     #run it through the St model
-    [SigDuneErosionST,zbmST] = LEH04ensembles(dv,zb,R_st,T)
+    [SigDuneErosionST,zbmST] = LEH04ensembles(dv,zb,R_st,T,Cs)
     #run it through GP
-    [SigDuneErosionGP,zbmGP] = LEH04ensembles(dv,zb,R_gp,T)
+    [SigDuneErosionGP,zbmGP] = LEH04ensembles(dv,zb,R_gp,T,Cs)
     #run it through 10 'draws' from GP
-    [SigDuneErosionGPD,zbmGPD] = LEH04ensembles(dv,zb,R_gp_draws,T)
+    [SigDuneErosionGPD,zbmGPD] = LEH04ensembles(dv,zb,R_gp_draws,T,Cs)
     
  
     #put time series back in the dictionary (new keys)
@@ -63,4 +66,6 @@ for k in data:
     #no info is deleted.
     data[k]=profile
     
-#perhaps a line to save this new dictionary...    
+#perhaps a line to save this new dictionary...  
+    
+    

@@ -1,6 +1,6 @@
 import numpy as np
 
-def LEH04ensembles( dv, zb, R, T ):
+def LEH04ensembles( dv, zb, R, T, Cs):
         
     '''
     for a given set of points x, z, delV,
@@ -11,7 +11,6 @@ def LEH04ensembles( dv, zb, R, T ):
     -John von Neumann to Marston Morse, 1952
     '''
     
-    Cs= 0.0016 #LEH04 param
     t = 60*60 #hourly timesteps
         
     #for each GP draws/realizations in R timeseries
@@ -40,7 +39,7 @@ def LEH04ensembles( dv, zb, R, T ):
                 #use the initial value from the curve, which is the pre storm
                 zbp = zb[0]
             else:
-                #use the model value from previosu time step
+                #use the model value from previous time step
                 zbp = zbm[i-1,ii]
                 
             #if the runup is higher than the dune toe, then erode the dune
@@ -59,7 +58,6 @@ def LEH04ensembles( dv, zb, R, T ):
                 else:
                     SigDuneErosion[i,ii] = DuneErosion + SigDuneErosion[i-1,ii]
 
-            
                 #2. Use to find the new zb, using interp
                 zbm[i,ii] = np.interp(SigDuneErosion[i,ii],dv,zb)
             

@@ -2,7 +2,7 @@
 """
 Script to make plots of the dune profile
 
-@author: evanbgoldstein
+EBG Aug. 2018 (Matlab); Nov 2018 (Python)
 """
 
 
@@ -19,6 +19,8 @@ with open('DIM_data_2011.pkl', 'rb') as f:
 p=15;
 #number of ensembles
 ens=10;
+#LEH04 erosion paramerer
+Cs= 0.0016
 
 profile=data[p]
     
@@ -31,9 +33,9 @@ R_gp = profile['R_gp']
 R_gp_draws = profile['R_gp_draws']
 
 #run it through GP
-[SigDuneErosionGP,zbmGP] = LEH04ensembles(dv,zb,R_gp,T)
+[SigDuneErosionGP,zbmGP] = LEH04ensembles(dv,zb,R_gp,T,Cs)
 #run it through 10 'draws' from GP
-[SigDuneErosionGPD,zbmGPD] = LEH04ensembles(dv,zb,R_gp_draws,T)
+[SigDuneErosionGPD,zbmGPD] = LEH04ensembles(dv,zb,R_gp_draws,T,Cs)
 
 
 #plotting
